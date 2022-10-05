@@ -1,382 +1,333 @@
-package cn.pedant.SweetAlert;
+package cn.pedant.SweetAlert
 
+import android.app.Dialog
+import android.content.Context
+import android.graphics.drawable.Drawable
+import android.os.Build
+import android.os.Bundle
+import android.view.View
+import android.view.animation.AlphaAnimation
+import android.view.animation.Animation
+import android.view.animation.Animation.AnimationListener
+import android.view.animation.AnimationSet
+import android.view.animation.Transformation
+import android.widget.Button
+import android.widget.FrameLayout
+import android.widget.ImageView
+import android.widget.TextView
+import cn.pedant.SweetAlert.OptAnimationLoader.loadAnimation
+import com.pnikosis.materialishprogress.ProgressWheel
 
-import android.app.Dialog;
-import android.content.Context;
-import android.graphics.drawable.Drawable;
-import android.os.Build;
-import android.os.Bundle;
-import android.view.View;
-import android.view.WindowManager;
-import android.view.animation.AlphaAnimation;
-import android.view.animation.Animation;
-import android.view.animation.AnimationSet;
-import android.view.animation.Transformation;
-import android.widget.Button;
-import android.widget.FrameLayout;
-import android.widget.ImageView;
-import android.widget.TextView;
+class SweetAlertDialog @JvmOverloads constructor(context: Context?, alertType: Int = NORMAL_TYPE) :
+    Dialog(context, R.style.alert_dialog), View.OnClickListener {
+    private var mDialogView: View? = null
+    private val mModalInAnim: AnimationSet?
+    private val mModalOutAnim: AnimationSet?
+    private val mOverlayOutAnim: Animation
+    private val mErrorInAnim: Animation?
+    private val mErrorXInAnim: AnimationSet?
+    private val mSuccessLayoutAnimSet: AnimationSet?
+    private val mSuccessBowAnim: Animation?
+    private var mTitleTextView: TextView? = null
+    private var mContentTextView: TextView? = null
+    var titleText: String? = null
+        private set
+    var contentText: String? = null
+        private set
+    var isShowCancelButton = false
+        private set
+    var isShowContentText = false
+        private set
+    var cancelText: String? = null
+        private set
+    var confirmText: String? = null
+        private set
+    var alerType: Int
+        private set
+    private var mErrorFrame: FrameLayout? = null
+    private var mSuccessFrame: FrameLayout? = null
+    private var mProgressFrame: FrameLayout? = null
+    private var mSuccessTick: SuccessTickView? = null
+    private var mErrorX: ImageView? = null
+    private var mSuccessLeftMask: View? = null
+    private var mSuccessRightMask: View? = null
+    private var mCustomImgDrawable: Drawable? = null
+    private var mCustomImage: ImageView? = null
+    private var mConfirmButton: Button? = null
+    private var mCancelButton: Button? = null
+    val progressHelper: ProgressHelper
+    private var mWarningFrame: FrameLayout? = null
+    private var mCancelClickListener: OnSweetClickListener? = null
+    private var mConfirmClickListener: OnSweetClickListener? = null
+    private var mCloseFromCancel = false
 
-import com.pnikosis.materialishprogress.ProgressWheel;
-
-import java.util.List;
-
-public class SweetAlertDialog extends Dialog implements View.OnClickListener {
-    private View mDialogView;
-    private AnimationSet mModalInAnim;
-    private AnimationSet mModalOutAnim;
-    private Animation mOverlayOutAnim;
-    private Animation mErrorInAnim;
-    private AnimationSet mErrorXInAnim;
-    private AnimationSet mSuccessLayoutAnimSet;
-    private Animation mSuccessBowAnim;
-    private TextView mTitleTextView;
-    private TextView mContentTextView;
-    private String mTitleText;
-    private String mContentText;
-    private boolean mShowCancel;
-    private boolean mShowContent;
-    private String mCancelText;
-    private String mConfirmText;
-    private int mAlertType;
-    private FrameLayout mErrorFrame;
-    private FrameLayout mSuccessFrame;
-    private FrameLayout mProgressFrame;
-    private SuccessTickView mSuccessTick;
-    private ImageView mErrorX;
-    private View mSuccessLeftMask;
-    private View mSuccessRightMask;
-    private Drawable mCustomImgDrawable;
-    private ImageView mCustomImage;
-    private Button mConfirmButton;
-    private Button mCancelButton;
-    private ProgressHelper mProgressHelper;
-    private FrameLayout mWarningFrame;
-    private OnSweetClickListener mCancelClickListener;
-    private OnSweetClickListener mConfirmClickListener;
-    private boolean mCloseFromCancel;
-
-    public static final int NORMAL_TYPE = 0;
-    public static final int ERROR_TYPE = 1;
-    public static final int SUCCESS_TYPE = 2;
-    public static final int WARNING_TYPE = 3;
-    public static final int CUSTOM_IMAGE_TYPE = 4;
-    public static final int PROGRESS_TYPE = 5;
-
-    public static interface OnSweetClickListener {
-        public void onClick (SweetAlertDialog sweetAlertDialog);
+    interface OnSweetClickListener {
+        fun onClick(sweetAlertDialog: SweetAlertDialog?)
     }
 
-    public SweetAlertDialog(Context context) {
-        this(context, NORMAL_TYPE);
+    override fun onCreate(savedInstanceState: Bundle) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.alert_dialog)
+        mDialogView = window.decorView.findViewById(android.R.id.content)
+        mTitleTextView = findViewById<View>(R.id.title_text) as TextView
+        mContentTextView = findViewById<View>(R.id.content_text) as TextView
+        mErrorFrame = findViewById<View>(R.id.error_frame) as FrameLayout
+        mErrorX = mErrorFrame!!.findViewById<View>(R.id.error_x) as ImageView
+        mSuccessFrame = findViewById<View>(R.id.success_frame) as FrameLayout
+        mProgressFrame = findViewById<View>(R.id.progress_dialog) as FrameLayout
+        mSuccessTick = mSuccessFrame!!.findViewById<View>(R.id.success_tick) as SuccessTickView
+        mSuccessLeftMask = mSuccessFrame!!.findViewById(R.id.mask_left)
+        mSuccessRightMask = mSuccessFrame!!.findViewById(R.id.mask_right)
+        mCustomImage = findViewById<View>(R.id.custom_image) as ImageView
+        mWarningFrame = findViewById<View>(R.id.warning_frame) as FrameLayout
+        mConfirmButton = findViewById<View>(R.id.confirm_button) as Button
+        mCancelButton = findViewById<View>(R.id.cancel_button) as Button
+        progressHelper.progressWheel = findViewById<View>(R.id.progressWheel) as ProgressWheel
+        mConfirmButton!!.setOnClickListener(this)
+        mCancelButton!!.setOnClickListener(this)
+        setTitleText(titleText)
+        setContentText(contentText)
+        setCancelText(cancelText)
+        setConfirmText(confirmText)
+        changeAlertType(alerType, true)
     }
 
-    public SweetAlertDialog(Context context, int alertType) {
-        super(context, R.style.alert_dialog);
-        setCancelable(true);
-        setCanceledOnTouchOutside(false);
-        mProgressHelper = new ProgressHelper(context);
-        mAlertType = alertType;
-        mErrorInAnim = OptAnimationLoader.loadAnimation(getContext(), R.anim.error_frame_in);
-        mErrorXInAnim = (AnimationSet)OptAnimationLoader.loadAnimation(getContext(), R.anim.error_x_in);
-        // 2.3.x system don't support alpha-animation on layer-list drawable
-        // remove it from animation set
-        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.GINGERBREAD_MR1) {
-            List<Animation> childAnims = mErrorXInAnim.getAnimations();
-            int idx = 0;
-            for (;idx < childAnims.size();idx++) {
-                if (childAnims.get(idx) instanceof AlphaAnimation) {
-                    break;
-                }
-            }
-            if (idx < childAnims.size()) {
-                childAnims.remove(idx);
-            }
-        }
-        mSuccessBowAnim = OptAnimationLoader.loadAnimation(getContext(), R.anim.success_bow_roate);
-        mSuccessLayoutAnimSet = (AnimationSet)OptAnimationLoader.loadAnimation(getContext(), R.anim.success_mask_layout);
-        mModalInAnim = (AnimationSet) OptAnimationLoader.loadAnimation(getContext(), R.anim.modal_in);
-        mModalOutAnim = (AnimationSet) OptAnimationLoader.loadAnimation(getContext(), R.anim.modal_out);
-        mModalOutAnim.setAnimationListener(new Animation.AnimationListener() {
-            @Override
-            public void onAnimationStart(Animation animation) {
-
-            }
-
-            @Override
-            public void onAnimationEnd(Animation animation) {
-                mDialogView.setVisibility(View.GONE);
-                mDialogView.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (mCloseFromCancel) {
-                            SweetAlertDialog.super.cancel();
-                        } else {
-                            SweetAlertDialog.super.dismiss();
-                        }
-                    }
-                });
-            }
-
-            @Override
-            public void onAnimationRepeat(Animation animation) {
-
-            }
-        });
-        // dialog overlay fade out
-        mOverlayOutAnim = new Animation() {
-            @Override
-            protected void applyTransformation(float interpolatedTime, Transformation t) {
-                WindowManager.LayoutParams wlp = getWindow().getAttributes();
-                wlp.alpha = 1 - interpolatedTime;
-                getWindow().setAttributes(wlp);
-            }
-        };
-        mOverlayOutAnim.setDuration(120);
+    private fun restore() {
+        mCustomImage!!.visibility = View.GONE
+        mErrorFrame!!.visibility = View.GONE
+        mSuccessFrame!!.visibility = View.GONE
+        mWarningFrame!!.visibility = View.GONE
+        mProgressFrame!!.visibility = View.GONE
+        mConfirmButton!!.visibility = View.VISIBLE
+        mConfirmButton!!.setBackgroundResource(R.drawable.blue_button_background)
+        mErrorFrame!!.clearAnimation()
+        mErrorX!!.clearAnimation()
+        mSuccessTick!!.clearAnimation()
+        mSuccessLeftMask!!.clearAnimation()
+        mSuccessRightMask!!.clearAnimation()
     }
 
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.alert_dialog);
-
-        mDialogView = getWindow().getDecorView().findViewById(android.R.id.content);
-        mTitleTextView = (TextView)findViewById(R.id.title_text);
-        mContentTextView = (TextView)findViewById(R.id.content_text);
-        mErrorFrame = (FrameLayout)findViewById(R.id.error_frame);
-        mErrorX = (ImageView)mErrorFrame.findViewById(R.id.error_x);
-        mSuccessFrame = (FrameLayout)findViewById(R.id.success_frame);
-        mProgressFrame = (FrameLayout)findViewById(R.id.progress_dialog);
-        mSuccessTick = (SuccessTickView)mSuccessFrame.findViewById(R.id.success_tick);
-        mSuccessLeftMask = mSuccessFrame.findViewById(R.id.mask_left);
-        mSuccessRightMask = mSuccessFrame.findViewById(R.id.mask_right);
-        mCustomImage = (ImageView)findViewById(R.id.custom_image);
-        mWarningFrame = (FrameLayout)findViewById(R.id.warning_frame);
-        mConfirmButton = (Button)findViewById(R.id.confirm_button);
-        mCancelButton = (Button)findViewById(R.id.cancel_button);
-        mProgressHelper.setProgressWheel((ProgressWheel)findViewById(R.id.progressWheel));
-        mConfirmButton.setOnClickListener(this);
-        mCancelButton.setOnClickListener(this);
-
-        setTitleText(mTitleText);
-        setContentText(mContentText);
-        setCancelText(mCancelText);
-        setConfirmText(mConfirmText);
-        changeAlertType(mAlertType, true);
-
-    }
-
-    private void restore () {
-        mCustomImage.setVisibility(View.GONE);
-        mErrorFrame.setVisibility(View.GONE);
-        mSuccessFrame.setVisibility(View.GONE);
-        mWarningFrame.setVisibility(View.GONE);
-        mProgressFrame.setVisibility(View.GONE);
-        mConfirmButton.setVisibility(View.VISIBLE);
-
-        mConfirmButton.setBackgroundResource(R.drawable.blue_button_background);
-        mErrorFrame.clearAnimation();
-        mErrorX.clearAnimation();
-        mSuccessTick.clearAnimation();
-        mSuccessLeftMask.clearAnimation();
-        mSuccessRightMask.clearAnimation();
-    }
-
-    private void playAnimation () {
-        if (mAlertType == ERROR_TYPE) {
-            mErrorFrame.startAnimation(mErrorInAnim);
-            mErrorX.startAnimation(mErrorXInAnim);
-        } else if (mAlertType == SUCCESS_TYPE) {
-            mSuccessTick.startTickAnim();
-            mSuccessRightMask.startAnimation(mSuccessBowAnim);
+    private fun playAnimation() {
+        if (alerType == ERROR_TYPE) {
+            mErrorFrame!!.startAnimation(mErrorInAnim)
+            mErrorX!!.startAnimation(mErrorXInAnim)
+        } else if (alerType == SUCCESS_TYPE) {
+            mSuccessTick!!.startTickAnim()
+            mSuccessRightMask!!.startAnimation(mSuccessBowAnim)
         }
     }
 
-    private void changeAlertType(int alertType, boolean fromCreate) {
-        mAlertType = alertType;
+    private fun changeAlertType(alertType: Int, fromCreate: Boolean) {
+        alerType = alertType
         // call after created views
         if (mDialogView != null) {
             if (!fromCreate) {
                 // restore all of views state before switching alert type
-                restore();
+                restore()
             }
-            switch (mAlertType) {
-                case ERROR_TYPE:
-                    mErrorFrame.setVisibility(View.VISIBLE);
-                    break;
-                case SUCCESS_TYPE:
-                    mSuccessFrame.setVisibility(View.VISIBLE);
+            when (alerType) {
+                ERROR_TYPE -> mErrorFrame!!.visibility = View.VISIBLE
+                SUCCESS_TYPE -> {
+                    mSuccessFrame!!.visibility = View.VISIBLE
                     // initial rotate layout of success mask
-                    mSuccessLeftMask.startAnimation(mSuccessLayoutAnimSet.getAnimations().get(0));
-                    mSuccessRightMask.startAnimation(mSuccessLayoutAnimSet.getAnimations().get(1));
-                    break;
-                case WARNING_TYPE:
-                    mConfirmButton.setBackgroundResource(R.drawable.red_button_background);
-                    mWarningFrame.setVisibility(View.VISIBLE);
-                    break;
-                case CUSTOM_IMAGE_TYPE:
-                    setCustomImage(mCustomImgDrawable);
-                    break;
-                case PROGRESS_TYPE:
-                    mProgressFrame.setVisibility(View.VISIBLE);
-                    mConfirmButton.setVisibility(View.GONE);
-                    break;
+                    mSuccessLeftMask!!.startAnimation(mSuccessLayoutAnimSet!!.animations[0])
+                    mSuccessRightMask!!.startAnimation(mSuccessLayoutAnimSet.animations[1])
+                }
+                WARNING_TYPE -> {
+                    mConfirmButton!!.setBackgroundResource(R.drawable.red_button_background)
+                    mWarningFrame!!.visibility = View.VISIBLE
+                }
+                CUSTOM_IMAGE_TYPE -> setCustomImage(mCustomImgDrawable)
+                PROGRESS_TYPE -> {
+                    mProgressFrame!!.visibility = View.VISIBLE
+                    mConfirmButton!!.visibility = View.GONE
+                }
             }
             if (!fromCreate) {
-                playAnimation();
+                playAnimation()
             }
         }
     }
 
-    public int getAlerType () {
-        return mAlertType;
+    fun changeAlertType(alertType: Int) {
+        changeAlertType(alertType, false)
     }
 
-    public void changeAlertType(int alertType) {
-        changeAlertType(alertType, false);
-    }
-
-
-    public String getTitleText () {
-        return mTitleText;
-    }
-
-    public SweetAlertDialog setTitleText (String text) {
-        mTitleText = text;
-        if (mTitleTextView != null && mTitleText != null) {
-            mTitleTextView.setText(mTitleText);
+    fun setTitleText(text: String?): SweetAlertDialog {
+        titleText = text
+        if (mTitleTextView != null && titleText != null) {
+            mTitleTextView!!.text = titleText
         }
-        return this;
+        return this
     }
 
-    public SweetAlertDialog setCustomImage (Drawable drawable) {
-        mCustomImgDrawable = drawable;
+    fun setCustomImage(drawable: Drawable?): SweetAlertDialog {
+        mCustomImgDrawable = drawable
         if (mCustomImage != null && mCustomImgDrawable != null) {
-            mCustomImage.setVisibility(View.VISIBLE);
-            mCustomImage.setImageDrawable(mCustomImgDrawable);
+            mCustomImage!!.visibility = View.VISIBLE
+            mCustomImage!!.setImageDrawable(mCustomImgDrawable)
         }
-        return this;
+        return this
     }
 
-    public SweetAlertDialog setCustomImage (int resourceId) {
-        return setCustomImage(getContext().getResources().getDrawable(resourceId));
+    fun setCustomImage(resourceId: Int): SweetAlertDialog {
+        return setCustomImage(context.resources.getDrawable(resourceId))
     }
 
-    public String getContentText () {
-        return mContentText;
-    }
-
-    public SweetAlertDialog setContentText (String text) {
-        mContentText = text;
-        if (mContentTextView != null && mContentText != null) {
-            showContentText(true);
-            mContentTextView.setText(mContentText);
+    fun setContentText(text: String?): SweetAlertDialog {
+        contentText = text
+        if (mContentTextView != null && contentText != null) {
+            showContentText(true)
+            mContentTextView!!.text = contentText
         }
-        return this;
+        return this
     }
 
-    public boolean isShowCancelButton () {
-        return mShowCancel;
-    }
-
-    public SweetAlertDialog showCancelButton (boolean isShow) {
-        mShowCancel = isShow;
+    fun showCancelButton(isShow: Boolean): SweetAlertDialog {
+        isShowCancelButton = isShow
         if (mCancelButton != null) {
-            mCancelButton.setVisibility(mShowCancel ? View.VISIBLE : View.GONE);
+            mCancelButton!!.visibility =
+                if (isShowCancelButton) View.VISIBLE else View.GONE
         }
-        return this;
+        return this
     }
 
-    public boolean isShowContentText () {
-        return mShowContent;
-    }
-
-    public SweetAlertDialog showContentText (boolean isShow) {
-        mShowContent = isShow;
+    fun showContentText(isShow: Boolean): SweetAlertDialog {
+        isShowContentText = isShow
         if (mContentTextView != null) {
-            mContentTextView.setVisibility(mShowContent ? View.VISIBLE : View.GONE);
+            mContentTextView!!.visibility =
+                if (isShowContentText) View.VISIBLE else View.GONE
         }
-        return this;
+        return this
     }
 
-    public String getCancelText () {
-        return mCancelText;
-    }
-
-    public SweetAlertDialog setCancelText (String text) {
-        mCancelText = text;
-        if (mCancelButton != null && mCancelText != null) {
-            showCancelButton(true);
-            mCancelButton.setText(mCancelText);
+    fun setCancelText(text: String?): SweetAlertDialog {
+        cancelText = text
+        if (mCancelButton != null && cancelText != null) {
+            showCancelButton(true)
+            mCancelButton!!.text = cancelText
         }
-        return this;
+        return this
     }
 
-    public String getConfirmText () {
-        return mConfirmText;
-    }
-
-    public SweetAlertDialog setConfirmText (String text) {
-        mConfirmText = text;
-        if (mConfirmButton != null && mConfirmText != null) {
-            mConfirmButton.setText(mConfirmText);
+    fun setConfirmText(text: String?): SweetAlertDialog {
+        confirmText = text
+        if (mConfirmButton != null && confirmText != null) {
+            mConfirmButton!!.text = confirmText
         }
-        return this;
+        return this
     }
 
-    public SweetAlertDialog setCancelClickListener (OnSweetClickListener listener) {
-        mCancelClickListener = listener;
-        return this;
+    fun setCancelClickListener(listener: OnSweetClickListener?): SweetAlertDialog {
+        mCancelClickListener = listener
+        return this
     }
 
-    public SweetAlertDialog setConfirmClickListener (OnSweetClickListener listener) {
-        mConfirmClickListener = listener;
-        return this;
+    fun setConfirmClickListener(listener: OnSweetClickListener?): SweetAlertDialog {
+        mConfirmClickListener = listener
+        return this
     }
 
-    protected void onStart() {
-        mDialogView.startAnimation(mModalInAnim);
-        playAnimation();
+    override fun onStart() {
+        mDialogView!!.startAnimation(mModalInAnim)
+        playAnimation()
     }
 
     /**
      * The real Dialog.cancel() will be invoked async-ly after the animation finishes.
      */
-    @Override
-    public void cancel() {
-        dismissWithAnimation(true);
+    override fun cancel() {
+        dismissWithAnimation(true)
     }
 
     /**
      * The real Dialog.dismiss() will be invoked async-ly after the animation finishes.
      */
-    public void dismissWithAnimation() {
-        dismissWithAnimation(false);
+    fun dismissWithAnimation() {
+        dismissWithAnimation(false)
     }
 
-    private void dismissWithAnimation(boolean fromCancel) {
-        mCloseFromCancel = fromCancel;
-        mConfirmButton.startAnimation(mOverlayOutAnim);
-        mDialogView.startAnimation(mModalOutAnim);
+    private fun dismissWithAnimation(fromCancel: Boolean) {
+        mCloseFromCancel = fromCancel
+        mConfirmButton!!.startAnimation(mOverlayOutAnim)
+        mDialogView!!.startAnimation(mModalOutAnim)
     }
 
-    @Override
-    public void onClick(View v) {
-        if (v.getId() == R.id.cancel_button) {
+    override fun onClick(v: View) {
+        if (v.id == R.id.cancel_button) {
             if (mCancelClickListener != null) {
-                mCancelClickListener.onClick(SweetAlertDialog.this);
+                mCancelClickListener!!.onClick(this@SweetAlertDialog)
             } else {
-                dismissWithAnimation();
+                dismissWithAnimation()
             }
-        } else if (v.getId() == R.id.confirm_button) {
+        } else if (v.id == R.id.confirm_button) {
             if (mConfirmClickListener != null) {
-                mConfirmClickListener.onClick(SweetAlertDialog.this);
+                mConfirmClickListener!!.onClick(this@SweetAlertDialog)
             } else {
-                dismissWithAnimation();
+                dismissWithAnimation()
             }
         }
     }
 
-    public ProgressHelper getProgressHelper () {
-        return mProgressHelper;
+    companion object {
+        const val NORMAL_TYPE = 0
+        const val ERROR_TYPE = 1
+        const val SUCCESS_TYPE = 2
+        const val WARNING_TYPE = 3
+        const val CUSTOM_IMAGE_TYPE = 4
+        const val PROGRESS_TYPE = 5
+    }
+
+    init {
+        setCancelable(true)
+        setCanceledOnTouchOutside(false)
+        progressHelper = ProgressHelper(context!!)
+        alerType = alertType
+        mErrorInAnim = loadAnimation(getContext(), R.anim.error_frame_in)
+        mErrorXInAnim = loadAnimation(getContext(), R.anim.error_x_in) as AnimationSet?
+        // 2.3.x system don't support alpha-animation on layer-list drawable
+        // remove it from animation set
+        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.GINGERBREAD_MR1) {
+            val childAnims = mErrorXInAnim!!.animations
+            var idx = 0
+            while (idx < childAnims.size) {
+                if (childAnims[idx] is AlphaAnimation) {
+                    break
+                }
+                idx++
+            }
+            if (idx < childAnims.size) {
+                childAnims.removeAt(idx)
+            }
+        }
+        mSuccessBowAnim = loadAnimation(getContext(), R.anim.success_bow_roate)
+        mSuccessLayoutAnimSet =
+            loadAnimation(getContext(), R.anim.success_mask_layout) as AnimationSet?
+        mModalInAnim = loadAnimation(getContext(), R.anim.modal_in) as AnimationSet?
+        mModalOutAnim = loadAnimation(getContext(), R.anim.modal_out) as AnimationSet?
+        mModalOutAnim!!.setAnimationListener(object : AnimationListener {
+            override fun onAnimationStart(animation: Animation) {}
+            override fun onAnimationEnd(animation: Animation) {
+                mDialogView!!.visibility = View.GONE
+                mDialogView!!.post {
+                    if (mCloseFromCancel) {
+                        super@SweetAlertDialog.cancel()
+                    } else {
+                        super@SweetAlertDialog.dismiss()
+                    }
+                }
+            }
+
+            override fun onAnimationRepeat(animation: Animation) {}
+        })
+        // dialog overlay fade out
+        mOverlayOutAnim = object : Animation() {
+            override fun applyTransformation(interpolatedTime: Float, t: Transformation) {
+                val wlp = window.attributes
+                wlp.alpha = 1 - interpolatedTime
+                window.attributes = wlp
+            }
+        }
+        mOverlayOutAnim.setDuration(120)
     }
 }

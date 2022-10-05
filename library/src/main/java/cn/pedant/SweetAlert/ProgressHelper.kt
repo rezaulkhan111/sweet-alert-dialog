@@ -1,167 +1,140 @@
-package cn.pedant.SweetAlert;
+package cn.pedant.SweetAlert
 
-import android.content.Context;
+import android.content.Context
+import com.pnikosis.materialishprogress.ProgressWheel
+import cn.pedant.SweetAlert.R
 
-import com.pnikosis.materialishprogress.ProgressWheel;
+class ProgressHelper(ctx: Context) {
+    private var mProgressWheel: ProgressWheel? = null
+    var isSpinning = true
+        private set
+    private var mSpinSpeed = 0.75f
+    private var mBarWidth: Int
+    private var mBarColor: Int
+    private var mRimWidth: Int
+    private var mRimColor: Int
+    private var mIsInstantProgress: Boolean
+    private var mProgressVal: Float
+    private var mCircleRadius: Int
+    var progressWheel: ProgressWheel?
+        get() = mProgressWheel
+        set(progressWheel) {
+            mProgressWheel = progressWheel
+            updatePropsIfNeed()
+        }
 
-public class ProgressHelper {
-    private ProgressWheel mProgressWheel;
-    private boolean mToSpin;
-    private float mSpinSpeed;
-    private int mBarWidth;
-    private int mBarColor;
-    private int mRimWidth;
-    private int mRimColor;
-    private boolean mIsInstantProgress;
-    private float mProgressVal;
-    private int mCircleRadius;
-
-    public ProgressHelper(Context ctx) {
-        mToSpin = true;
-        mSpinSpeed = 0.75f;
-        mBarWidth = ctx.getResources().getDimensionPixelSize(R.dimen.common_circle_width) + 1;
-        mBarColor = ctx.getResources().getColor(R.color.success_stroke_color);
-        mRimWidth = 0;
-        mRimColor = 0x00000000;
-        mIsInstantProgress = false;
-        mProgressVal = -1;
-        mCircleRadius = ctx.getResources().getDimensionPixelOffset(R.dimen.progress_circle_radius);
-    }
-
-    public ProgressWheel getProgressWheel () {
-        return mProgressWheel;
-    }
-
-    public void setProgressWheel (ProgressWheel progressWheel) {
-        mProgressWheel = progressWheel;
-        updatePropsIfNeed();
-    }
-
-    private void updatePropsIfNeed () {
+    private fun updatePropsIfNeed() {
         if (mProgressWheel != null) {
-            if (!mToSpin && mProgressWheel.isSpinning()) {
-                mProgressWheel.stopSpinning();
-            } else if (mToSpin && !mProgressWheel.isSpinning()) {
-                mProgressWheel.spin();
+            if (!isSpinning && mProgressWheel!!.isSpinning) {
+                mProgressWheel!!.stopSpinning()
+            } else if (isSpinning && !mProgressWheel!!.isSpinning) {
+                mProgressWheel!!.spin()
             }
-            if (mSpinSpeed != mProgressWheel.getSpinSpeed()) {
-                mProgressWheel.setSpinSpeed(mSpinSpeed);
+            if (mSpinSpeed != mProgressWheel!!.spinSpeed) {
+                mProgressWheel!!.spinSpeed = mSpinSpeed
             }
-            if (mBarWidth != mProgressWheel.getBarWidth()) {
-                mProgressWheel.setBarWidth(mBarWidth);
+            if (mBarWidth != mProgressWheel!!.barWidth) {
+                mProgressWheel!!.barWidth = mBarWidth
             }
-            if (mBarColor != mProgressWheel.getBarColor()) {
-                mProgressWheel.setBarColor(mBarColor);
+            if (mBarColor != mProgressWheel!!.barColor) {
+                mProgressWheel!!.barColor = mBarColor
             }
-            if (mRimWidth != mProgressWheel.getRimWidth()) {
-                mProgressWheel.setRimWidth(mRimWidth);
+            if (mRimWidth != mProgressWheel!!.rimWidth) {
+                mProgressWheel!!.rimWidth = mRimWidth
             }
-            if (mRimColor != mProgressWheel.getRimColor()) {
-                mProgressWheel.setRimColor(mRimColor);
+            if (mRimColor != mProgressWheel!!.rimColor) {
+                mProgressWheel!!.rimColor = mRimColor
             }
-            if (mProgressVal != mProgressWheel.getProgress()) {
+            if (mProgressVal != mProgressWheel!!.progress) {
                 if (mIsInstantProgress) {
-                    mProgressWheel.setInstantProgress(mProgressVal);
+                    mProgressWheel!!.setInstantProgress(mProgressVal)
                 } else {
-                    mProgressWheel.setProgress(mProgressVal);
+                    mProgressWheel!!.progress = mProgressVal
                 }
             }
-            if (mCircleRadius != mProgressWheel.getCircleRadius()) {
-                mProgressWheel.setCircleRadius(mCircleRadius);
+            if (mCircleRadius != mProgressWheel!!.circleRadius) {
+                mProgressWheel!!.circleRadius = mCircleRadius
             }
         }
     }
 
-    public void resetCount() {
+    fun resetCount() {
         if (mProgressWheel != null) {
-            mProgressWheel.resetCount();
+            mProgressWheel!!.resetCount()
         }
     }
 
-    public boolean isSpinning() {
-        return mToSpin;
+    fun spin() {
+        isSpinning = true
+        updatePropsIfNeed()
     }
 
-    public void spin() {
-        mToSpin = true;
-        updatePropsIfNeed();
+    fun stopSpinning() {
+        isSpinning = false
+        updatePropsIfNeed()
     }
 
-    public void stopSpinning() {
-        mToSpin = false;
-        updatePropsIfNeed();
-    }
+    var progress: Float
+        get() = mProgressVal
+        set(progress) {
+            mIsInstantProgress = false
+            mProgressVal = progress
+            updatePropsIfNeed()
+        }
 
-    public float getProgress() {
-        return mProgressVal;
-    }
-
-    public void setProgress(float progress) {
-        mIsInstantProgress = false;
-        mProgressVal = progress;
-        updatePropsIfNeed();
-    }
-
-    public void setInstantProgress(float progress) {
-        mProgressVal = progress;
-        mIsInstantProgress = true;
-        updatePropsIfNeed();
-    }
-
-    public int getCircleRadius() {
-        return mCircleRadius;
+    fun setInstantProgress(progress: Float) {
+        mProgressVal = progress
+        mIsInstantProgress = true
+        updatePropsIfNeed()
     }
 
     /**
      * @param circleRadius units using pixel
-     * **/
-    public void setCircleRadius(int circleRadius) {
-        mCircleRadius = circleRadius;
-        updatePropsIfNeed();
-    }
+     */
+    var circleRadius: Int
+        get() = mCircleRadius
+        set(circleRadius) {
+            mCircleRadius = circleRadius
+            updatePropsIfNeed()
+        }
+    var barWidth: Int
+        get() = mBarWidth
+        set(barWidth) {
+            mBarWidth = barWidth
+            updatePropsIfNeed()
+        }
+    var barColor: Int
+        get() = mBarColor
+        set(barColor) {
+            mBarColor = barColor
+            updatePropsIfNeed()
+        }
+    var rimWidth: Int
+        get() = mRimWidth
+        set(rimWidth) {
+            mRimWidth = rimWidth
+            updatePropsIfNeed()
+        }
+    var rimColor: Int
+        get() = mRimColor
+        set(rimColor) {
+            mRimColor = rimColor
+            updatePropsIfNeed()
+        }
+    var spinSpeed: Float
+        get() = mSpinSpeed
+        set(spinSpeed) {
+            mSpinSpeed = spinSpeed
+            updatePropsIfNeed()
+        }
 
-    public int getBarWidth() {
-        return mBarWidth;
-    }
-
-    public void setBarWidth(int barWidth) {
-        mBarWidth = barWidth;
-        updatePropsIfNeed();
-    }
-
-    public int getBarColor() {
-        return mBarColor;
-    }
-
-    public void setBarColor(int barColor) {
-        mBarColor = barColor;
-        updatePropsIfNeed();
-    }
-
-    public int getRimWidth() {
-        return mRimWidth;
-    }
-
-    public void setRimWidth(int rimWidth) {
-        mRimWidth = rimWidth;
-        updatePropsIfNeed();
-    }
-
-    public int getRimColor() {
-        return mRimColor;
-    }
-
-    public void setRimColor(int rimColor) {
-        mRimColor = rimColor;
-        updatePropsIfNeed();
-    }
-
-    public float getSpinSpeed() {
-        return mSpinSpeed;
-    }
-
-    public void setSpinSpeed(float spinSpeed) {
-        mSpinSpeed = spinSpeed;
-        updatePropsIfNeed();
+    init {
+        mBarWidth = ctx.resources.getDimensionPixelSize(R.dimen.common_circle_width) + 1
+        mBarColor = ctx.resources.getColor(R.color.success_stroke_color)
+        mRimWidth = 0
+        mRimColor = 0x00000000
+        mIsInstantProgress = false
+        mProgressVal = -1f
+        mCircleRadius = ctx.resources.getDimensionPixelOffset(R.dimen.progress_circle_radius)
     }
 }

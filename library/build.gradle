@@ -1,11 +1,12 @@
 apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+apply from: 'https://raw.github.com/chrisbanes/gradle-mvn-push/master/gradle-mvn-push.gradle'
 
 version = VERSION_NAME
 group = GROUP
 
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
-    buildToolsVersion rootProject.ext.buildToolsVersion
 
     defaultConfig {
         minSdkVersion 9
@@ -17,7 +18,10 @@ android {
 }
 
 dependencies {
-    compile 'com.pnikosis:materialish-progress:1.0'
+    implementation 'com.pnikosis:materialish-progress:1.7'
+    implementation "androidx.core:core-ktx:1.7.0"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 }
-
-apply from: 'https://raw.github.com/chrisbanes/gradle-mvn-push/master/gradle-mvn-push.gradle'
+repositories {
+    mavenCentral()
+}
