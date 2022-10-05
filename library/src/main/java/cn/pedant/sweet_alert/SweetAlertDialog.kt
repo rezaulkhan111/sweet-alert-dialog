@@ -1,4 +1,4 @@
-package cn.pedant.SweetAlert
+package cn.pedant.sweet_alert
 
 import android.app.Dialog
 import android.content.Context
@@ -15,11 +15,11 @@ import android.widget.Button
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
-import cn.pedant.SweetAlert.OptAnimationLoader.loadAnimation
+import cn.pedant.sweet_alert.OptAnimationLoader.loadAnimation
 import com.pnikosis.materialishprogress.ProgressWheel
 
 class SweetAlertDialog @JvmOverloads constructor(context: Context?, alertType: Int = NORMAL_TYPE) :
-    Dialog(context, R.style.alert_dialog), View.OnClickListener {
+    Dialog(context!!, R.style.alert_dialog), View.OnClickListener {
     private var mDialogView: View? = null
     private val mModalInAnim: AnimationSet?
     private val mModalOutAnim: AnimationSet?
@@ -68,7 +68,7 @@ class SweetAlertDialog @JvmOverloads constructor(context: Context?, alertType: I
     override fun onCreate(savedInstanceState: Bundle) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.alert_dialog)
-        mDialogView = window.decorView.findViewById(android.R.id.content)
+        mDialogView = window!!.decorView.findViewById(android.R.id.content)
         mTitleTextView = findViewById<View>(R.id.title_text) as TextView
         mContentTextView = findViewById<View>(R.id.content_text) as TextView
         mErrorFrame = findViewById<View>(R.id.error_frame) as FrameLayout
@@ -323,9 +323,9 @@ class SweetAlertDialog @JvmOverloads constructor(context: Context?, alertType: I
         // dialog overlay fade out
         mOverlayOutAnim = object : Animation() {
             override fun applyTransformation(interpolatedTime: Float, t: Transformation) {
-                val wlp = window.attributes
+                val wlp = window!!.attributes
                 wlp.alpha = 1 - interpolatedTime
-                window.attributes = wlp
+                window!!.attributes = wlp
             }
         }
         mOverlayOutAnim.setDuration(120)

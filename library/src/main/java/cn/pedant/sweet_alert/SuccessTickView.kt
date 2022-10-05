@@ -1,9 +1,9 @@
-package cn.pedant.SweetAlert
+package cn.pedant.sweet_alert
 
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Paint
-import cn.pedant.SweetAlert.R
+import cn.pedant.sweet_alert.R
 import android.graphics.RectF
 import android.util.AttributeSet
 import android.view.View
@@ -61,13 +61,13 @@ class SuccessTickView : View {
             leftRect.top = (totalH + CONST_RIGHT_RECT_W) / 2
             leftRect.bottom = leftRect.top + CONST_RECT_WEIGHT
         }
-        canvas.drawRoundRect(leftRect, CONST_RADIUS, CONST_RADIUS, mPaint)
+        canvas.drawRoundRect(leftRect, CONST_RADIUS, CONST_RADIUS, mPaint!!)
         val rightRect = RectF()
         rightRect.bottom = (totalH + CONST_RIGHT_RECT_W) / 2 + CONST_RECT_WEIGHT - 1
         rightRect.left = (totalW + CONST_LEFT_RECT_W) / 2
         rightRect.right = rightRect.left + CONST_RECT_WEIGHT
         rightRect.top = rightRect.bottom - mRightRectWidth
-        canvas.drawRoundRect(rightRect, CONST_RADIUS, CONST_RADIUS, mPaint)
+        canvas.drawRoundRect(rightRect, CONST_RADIUS, CONST_RADIUS, mPaint!!)
     }
 
     fun dip2px(dpValue: Float): Float {

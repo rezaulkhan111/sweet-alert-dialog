@@ -1,4 +1,4 @@
-package cn.pedant.SweetAlert
+package cn.pedant.sweet_alert
 
 import android.content.Context
 import kotlin.Throws
@@ -10,7 +10,6 @@ import org.xmlpull.v1.XmlPullParserException
 import org.xmlpull.v1.XmlPullParser
 import android.view.animation.AnimationSet
 import android.util.Xml
-import cn.pedant.SweetAlert.OptAnimationLoader
 import android.view.animation.AlphaAnimation
 import android.view.animation.ScaleAnimation
 import android.view.animation.RotateAnimation
