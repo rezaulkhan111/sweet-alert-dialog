@@ -2,7 +2,6 @@ package cn.pedant.sweet_alert
 
 import android.content.Context
 import com.pnikosis.materialishprogress.ProgressWheel
-import cn.pedant.sweet_alert.R
 
 class ProgressHelper(ctx: Context) {
     private var mProgressWheel: ProgressWheel? = null

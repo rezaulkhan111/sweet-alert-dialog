@@ -7,7 +7,7 @@ import android.util.TypedValue
 import android.view.animation.Animation
 import android.view.animation.Transformation
 
-class Rotate3dAnimation : Animation {
+internal class Rotate3dAnimation : Animation {
     private var mPivotXType = ABSOLUTE
     private var mPivotYType = ABSOLUTE
     private var mPivotXValue = 0.0f
@@ -19,7 +19,7 @@ class Rotate3dAnimation : Animation {
     private var mCamera: Camera? = null
     private var mRollType: Int
 
-    protected class Description {
+    class Description {
         var type = 0
         var value = 0f
     }
@@ -58,10 +58,10 @@ class Rotate3dAnimation : Animation {
         mFromDegrees = a.getFloat(R.styleable.Rotate3dAnimation_fromDeg, 0.0f)
         mToDegrees = a.getFloat(R.styleable.Rotate3dAnimation_toDeg, 0.0f)
         mRollType = a.getInt(R.styleable.Rotate3dAnimation_rollType, ROLL_BY_X)
-        var d = parseValue(a.peekValue(R.styleable.Rotate3dAnimation_pivotX))
+        var d = parseValue(a.peekValue(R.styleable.Rotate3dAnimation_customPivotX))
         mPivotXType = d.type
         mPivotXValue = d.value
-        d = parseValue(a.peekValue(R.styleable.Rotate3dAnimation_pivotY))
+        d = parseValue(a.peekValue(R.styleable.Rotate3dAnimation_customPivotY))
         mPivotYType = d.type
         mPivotYValue = d.value
         a.recycle()

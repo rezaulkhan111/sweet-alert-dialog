@@ -3,14 +3,13 @@ package cn.pedant.sweet_alert
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Paint
-import cn.pedant.sweet_alert.R
 import android.graphics.RectF
 import android.util.AttributeSet
 import android.view.View
 import android.view.animation.Animation
 import android.view.animation.Transformation
 
-class SuccessTickView : View {
+internal class SuccessTickView : View {
     private var mDensity = -1f
     private var mPaint: Paint? = null
     private val CONST_RADIUS = dip2px(1.2f)
@@ -46,8 +45,8 @@ class SuccessTickView : View {
         var totalH = height
         // rotate canvas first
         canvas.rotate(45f, (totalW / 2).toFloat(), (totalH / 2).toFloat())
-        totalW /= 1.2.toInt()
-        totalH /= 1.4.toInt()
+        totalW = (totalW / 1.2).toInt()
+        totalH = (totalH / 1.4).toInt()
         mMaxLeftRectWidth = (totalW + CONST_LEFT_RECT_W) / 2 + CONST_RECT_WEIGHT - 1
         val leftRect = RectF()
         if (mLeftRectGrowMode) {
