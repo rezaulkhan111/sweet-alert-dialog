@@ -7,7 +7,7 @@ import android.util.TypedValue
 import android.view.animation.Animation
 import android.view.animation.Transformation
 
-internal class Rotate3dAnimation : Animation {
+class Rotate3dAnimation : Animation {
     private var mPivotXType = ABSOLUTE
     private var mPivotYType = ABSOLUTE
     private var mPivotXValue = 0.0f

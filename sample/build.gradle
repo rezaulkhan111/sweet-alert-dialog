@@ -6,23 +6,15 @@ version = VERSION_NAME
 group = GROUP
 
 android {
-    compileSdkVersion 30
+    compileSdkVersion 31
     defaultConfig {
         minSdkVersion 19
         //noinspection OldTargetApi
-        targetSdkVersion 30
+        targetSdkVersion 31
     }
     lintOptions {
         abortOnError false
     }
-
-//    buildTypes {
-//        release {
-//            proguardFile 'proguard-android.txt'
-//            minifyEnabled true
-//            shrinkResources true
-//        }
-//    }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
