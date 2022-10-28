@@ -30,20 +30,20 @@ class ProgressHelper(ctx: Context) {
             } else if (isSpinning && !mProgressWheel!!.isSpinning) {
                 mProgressWheel!!.spin()
             }
-            if (mSpinSpeed != mProgressWheel!!.spinSpeed) {
-                mProgressWheel!!.spinSpeed = mSpinSpeed
+            if (mSpinSpeed != mProgressWheel!!.getSpinSpeed()) {
+                mProgressWheel!!.setSpinSpeed(mSpinSpeed)
             }
-            if (mBarWidth != mProgressWheel!!.barWidth) {
-                mProgressWheel!!.barWidth = mBarWidth
+            if (mBarWidth != mProgressWheel!!.getBarWidth()) {
+                mProgressWheel!!.setBarWidth(mBarWidth)
             }
-            if (mBarColor != mProgressWheel!!.barColor) {
-                mProgressWheel!!.barColor = mBarColor
+            if (mBarColor != mProgressWheel!!.getBarColor()) {
+                mProgressWheel!!.setBarColor(mBarColor)
             }
-            if (mRimWidth != mProgressWheel!!.rimWidth) {
-                mProgressWheel!!.rimWidth = mRimWidth
+            if (mRimWidth != mProgressWheel!!.getRimWidth()) {
+                mProgressWheel!!.setRimWidth(mRimWidth)
             }
-            if (mRimColor != mProgressWheel!!.rimColor) {
-                mProgressWheel!!.rimColor = mRimColor
+            if (mRimColor != mProgressWheel!!.getRimColor()) {
+                mProgressWheel!!.setRimColor(mRimColor)
             }
             if (mProgressVal != mProgressWheel!!.progress) {
                 if (mIsInstantProgress) {
@@ -52,8 +52,8 @@ class ProgressHelper(ctx: Context) {
                     mProgressWheel!!.progress = mProgressVal
                 }
             }
-            if (mCircleRadius != mProgressWheel!!.circleRadius) {
-                mProgressWheel!!.circleRadius = mCircleRadius
+            if (mCircleRadius != mProgressWheel!!.getCircleRadius()) {
+                mProgressWheel!!.setCircleRadius(mCircleRadius)
             }
         }
     }

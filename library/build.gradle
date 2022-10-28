@@ -1,6 +1,7 @@
 plugins {
     id 'com.android.library'
     id 'kotlin-android'
+    id 'maven-publish'
 }
 
 version = VERSION_NAME
@@ -17,15 +18,38 @@ android {
     lintOptions {
         abortOnError false
     }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
 }
 
 dependencies {
-    implementation 'com.pnikosis:materialish-progress:1.7'
-    implementation "androidx.core:core-ktx:1.8.0"
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-}
+    implementation "androidx.core:core-ktx:1.6.0"
+    implementation 'androidx.appcompat:appcompat:1.2.0'
+    implementation 'com.google.android.material:material:1.3.0'
+    implementation "androidx.lifecycle:lifecycle-extensions:2.2.0"
 
-apply from: 'https://raw.github.com/chrisbanes/gradle-mvn-push/master/gradle-mvn-push.gradle'
-repositories {
-//    mavenCentral()
+    implementation 'com.github.rezaulkhan111:materialish-progress:1.0.9'
+//    implementation 'com.pnikosis:materialish-progress:1.7'
+//    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 }
+afterEvaluate {
+    publishing {
+        publications {
+            release(MavenPublication) {
+                from components.release
+                groupId = "cn.pedant.sweet_alert"
+                artifactId = "sweet-alert-dialog"
+                version = "1.0.0"
+            }
+        }
+    }
+}
+//apply from: 'https://raw.github.com/chrisbanes/gradle-mvn-push/master/gradle-mvn-push.gradle'
+//repositories {
+//    mavenCentral()
+//}
