@@ -30,7 +30,7 @@ Add the JitPack repository to your build file
 Add the dependency
 
     dependencies {
-	        implementation 'com.github.rezaulkhan111:sweet-alert-dialog:Tag'
+	        implementation 'com.github.rezaulkhan111:sweet-alert-dialog-ktx:Tag'
 	}
 
 ## Usage
