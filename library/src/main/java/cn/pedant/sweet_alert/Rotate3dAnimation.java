@@ -1,4 +1,4 @@
-package cn.pedant.SweetAlert;
+package cn.pedant.sweet_alert;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -9,19 +9,18 @@ import android.util.TypedValue;
 import android.view.animation.Animation;
 import android.view.animation.Transformation;
 
+
 public class Rotate3dAnimation extends Animation {
     private int mPivotXType = ABSOLUTE;
     private int mPivotYType = ABSOLUTE;
     private float mPivotXValue = 0.0f;
     private float mPivotYValue = 0.0f;
-
     private float mFromDegrees;
     private float mToDegrees;
     private float mPivotX;
     private float mPivotY;
     private Camera mCamera;
     private int mRollType;
-
     public static final int ROLL_BY_X = 0;
     public static final int ROLL_BY_Y = 1;
     public static final int ROLL_BY_Z = 2;
@@ -61,7 +60,7 @@ public class Rotate3dAnimation extends Animation {
         return d;
     }
 
-    public Rotate3dAnimation (Context context, AttributeSet attrs) {
+    public Rotate3dAnimation(Context context, AttributeSet attrs) {
         super(context, attrs);
 
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.Rotate3dAnimation);
@@ -82,7 +81,7 @@ public class Rotate3dAnimation extends Animation {
         initializePivotPoint();
     }
 
-    public Rotate3dAnimation (int rollType, float fromDegrees, float toDegrees) {
+    public Rotate3dAnimation(int rollType, float fromDegrees, float toDegrees) {
         mRollType = rollType;
         mFromDegrees = fromDegrees;
         mToDegrees = toDegrees;
@@ -90,7 +89,7 @@ public class Rotate3dAnimation extends Animation {
         mPivotY = 0.0f;
     }
 
-    public Rotate3dAnimation (int rollType, float fromDegrees, float toDegrees, float pivotX, float pivotY) {
+    public Rotate3dAnimation(int rollType, float fromDegrees, float toDegrees, float pivotX, float pivotY) {
         mRollType = rollType;
         mFromDegrees = fromDegrees;
         mToDegrees = toDegrees;
@@ -102,7 +101,7 @@ public class Rotate3dAnimation extends Animation {
         initializePivotPoint();
     }
 
-    public Rotate3dAnimation (int rollType, float fromDegrees, float toDegrees, int pivotXType, float pivotXValue, int pivotYType, float pivotYValue) {
+    public Rotate3dAnimation(int rollType, float fromDegrees, float toDegrees, int pivotXType, float pivotXValue, int pivotYType, float pivotYValue) {
         mRollType = rollType;
         mFromDegrees = fromDegrees;
         mToDegrees = toDegrees;

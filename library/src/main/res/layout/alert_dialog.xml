@@ -15,10 +15,10 @@
         android:gravity="center"
         android:minWidth="@dimen/alert_width"
         android:orientation="vertical"
-        android:paddingBottom="15dp"
         android:paddingLeft="30dp"
+        android:paddingTop="10dp"
         android:paddingRight="30dp"
-        android:paddingTop="10dp">
+        android:paddingBottom="15dp">
 
         <ImageView
             android:id="@+id/custom_image"
@@ -178,8 +178,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:paddingBottom="4dp"
             android:paddingTop="10dp"
+            android:paddingBottom="4dp"
             android:visibility="visible">
 
             <Button

@@ -1,4 +1,4 @@
-package cn.pedant.SweetAlert;
+package cn.pedant.sweet_alert;
 
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;

@@ -1,4 +1,4 @@
-package cn.pedant.SweetAlert;
+package cn.pedant.sweet_alert;
 
 import android.content.Context;
 import android.content.res.Resources;
@@ -6,6 +6,7 @@ import android.content.res.XmlResourceParser;
 import android.util.AttributeSet;
 import android.util.Xml;
 import android.view.animation.*;
+
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -50,14 +51,14 @@ public class OptAnimationLoader {
         int type;
         int depth = parser.getDepth();
 
-        while (((type=parser.next()) != XmlPullParser.END_TAG || parser.getDepth() > depth)
+        while (((type = parser.next()) != XmlPullParser.END_TAG || parser.getDepth() > depth)
                 && type != XmlPullParser.END_DOCUMENT) {
 
             if (type != XmlPullParser.START_TAG) {
                 continue;
             }
 
-            String  name = parser.getName();
+            String name = parser.getName();
 
             switch (name) {
                 case "set":
@@ -80,7 +81,8 @@ public class OptAnimationLoader {
                     try {
                         anim = (Animation) Class.forName(name).getConstructor(Context.class, AttributeSet.class).newInstance(c, attrs);
                     } catch (Exception te) {
-                        throw new RuntimeException("Unknown animation name: " + parser.getName() + " error:" + te.getMessage());
+                        break;
+//                        throw new RuntimeException("Unknown animation name: " + parser.getName() + " error:" + te.getMessage());
                     }
                     break;
             }

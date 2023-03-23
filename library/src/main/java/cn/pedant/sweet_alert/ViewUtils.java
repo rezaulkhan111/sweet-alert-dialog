@@ -1,4 +1,4 @@
-package cn.pedant.SweetAlert;
+package cn.pedant.sweet_alert;
 
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.DrawableContainer;
@@ -6,7 +6,6 @@ import android.graphics.drawable.StateListDrawable;
 import android.view.View;
 
 public class ViewUtils {
-
     static Drawable[] getDrawable(View view) {
         StateListDrawable drawable = (StateListDrawable) view.getBackground();
         DrawableContainer.DrawableContainerState dcs = (DrawableContainer.DrawableContainerState) drawable.getConstantState();
@@ -15,5 +14,4 @@ public class ViewUtils {
         }
         return null;
     }
-
 }

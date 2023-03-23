@@ -1,5 +1,4 @@
-package cn.pedant.SweetAlert;
-
+package cn.pedant.sweet_alert;
 
 import android.app.Activity;
 import android.app.Dialog;
@@ -80,24 +79,18 @@ public class SweetAlertDialog extends Dialog implements View.OnClickListener {
     private boolean mCloseFromCancel;
     private boolean mHideKeyBoardOnDismiss = true;
     private int contentTextSize = 0;
-
     public static final int NORMAL_TYPE = 0;
     public static final int ERROR_TYPE = 1;
     public static final int SUCCESS_TYPE = 2;
     public static final int WARNING_TYPE = 3;
     public static final int CUSTOM_IMAGE_TYPE = 4;
     public static final int PROGRESS_TYPE = 5;
-
-
     public static boolean DARK_STYLE = false;
-
     //aliases
     public final static int BUTTON_CONFIRM = DialogInterface.BUTTON_POSITIVE;
     public final static int BUTTON_CANCEL = DialogInterface.BUTTON_NEGATIVE;
-
     private final float defStrokeWidth;
     private float strokeWidth = 0;
-
 
     public SweetAlertDialog hideConfirmButton() {
         this.mHideConfirmButton = true;
@@ -154,14 +147,11 @@ public class SweetAlertDialog extends Dialog implements View.OnClickListener {
                 if (mHideKeyBoardOnDismiss) {
                     hideSoftKeyboard();
                 }
-                mDialogView.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (mCloseFromCancel) {
-                            SweetAlertDialog.super.cancel();
-                        } else {
-                            SweetAlertDialog.super.dismiss();
-                        }
+                mDialogView.post(() -> {
+                    if (mCloseFromCancel) {
+                        SweetAlertDialog.super.cancel();
+                    } else {
+                        SweetAlertDialog.super.dismiss();
                     }
                 });
             }
@@ -226,7 +216,6 @@ public class SweetAlertDialog extends Dialog implements View.OnClickListener {
         setNeutralButtonBackgroundColor(mNeutralButtonBackgroundColor);
         setNeutralButtonTextColor(mNeutralButtonTextColor);
         changeAlertType(mAlertType, true);
-
     }
 
     private void restore() {
@@ -320,7 +309,6 @@ public class SweetAlertDialog extends Dialog implements View.OnClickListener {
     public void changeAlertType(int alertType) {
         changeAlertType(alertType, false);
     }
-
 
     public String getTitleText() {
         return mTitleText;
