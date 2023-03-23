@@ -17,6 +17,5 @@ android {
 }
 
 dependencies {
-//    implementation 'com.github.rezaulkhan111:materialish-progress:1.0.10-ktx'
-    implementation 'com.github.rezaulkhan111:materialish-progress:1.0.11-java'
+    implementation 'com.github.rezaulkhan111:materialish-progress:1.0.10-ktx'
 }

@@ -18,6 +18,6 @@ android {
 
 dependencies {
     implementation project(':library')
-    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.8.0")
-    implementation("org.jetbrains.kotlin:kotlin-stdlib-common:1.8.0")
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.8.0'
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib-common:1.8.0'
 }
